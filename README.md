@@ -77,6 +77,42 @@ This is the place for you to write reflections:
 ### Mandatory (Publisher) Reflections
 
 #### Reflection Publisher-1
+1. In the Observer pattern diagram explained by the Head First Design Pattern book, Subscriber
+is defined as an interface. Explain based on your understanding of Observer design patterns,
+do we still need an interface (or trait in Rust) in this BambangShop case, or a single Model
+struct is enough?
+
+the classic observer pattern from the head first book requires an interfacce so a publisher can
+polymorphicvally call an update() method on various in-memory subscriber obejcts. In bambangshop, 
+the publisher and subscriber are completely seperate applications, and the publisher notifies every 
+subscriber using the exact same mechanism in which sending an HTTP POST request to their specific URL.
+because there are no different in app notification behaviours to abstract away, a single subscirber model 
+struct that acts purely as a data ocntainer for the subscirber utl and deails is perfectly sufficient
+
+
+2. id in Program and url in Subscriber is intended to be unique. Explain based on your
+understanding, is using Vec (list) sufficient or using DashMap (map/dictionary) like we currently
+use is necessary for this case?
+
+using a vec is not sufficient for this case. First, checking for unique id or url in a vec is slow because 
+the program has to scan the entire list one by one. second, because a web server handles many request at the exact same time, 
+a vec would force those request to wait in line to edit the data, causing lag. a dashmap is necessary because it allows 
+instant lookups to prevent duplicates, and it is specially designed to let multiple requests safely update the data at the same time without crashing
+
+3. When programming using Rust, we are enforced by rigorous compiler constraints to make a
+thread-safe program. In the case of the List of Subscribers (SUBSCRIBERS) static variable, we
+used the DashMap external library for thread safe HashMap. Explain based on your
+understanding of design patterns, do we still need DashMap or we can implement Singleton
+pattern instead?
+
+we still need dashmap because the singleton pattern and dashmap solve two different problems. 
+the singleton pattern only ensures that there is a single, global list of subbscribers in the application. 
+However, because a web application is multi-threaded, multiple request might try to modify that single list 
+at the exact same time. the singleton pattern does not prevent these threads from crashing into each other. 
+therefore, we sill need dashmap to enforce thread safety and allow concurrent read/write operations 
+on that single global instance, satisfying rust strict compiler constraints
+
+
 
 #### Reflection Publisher-2
 
