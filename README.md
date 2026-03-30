@@ -112,8 +112,23 @@ at the exact same time. the singleton pattern does not prevent these threads fro
 therefore, we sill need dashmap to enforce thread safety and allow concurrent read/write operations 
 on that single global instance, satisfying rust strict compiler constraints
 
-
-
 #### Reflection Publisher-2
+
+1. In the Model-View Controller (MVC) compound pattern, there is no “Service” and “Repository”. Model in MVC covers both data storage and business logic. Explain based on your understanding of design principles, why we need to separate “Service” and “Repository” from
+a Model?
+
+Seperating the service and repository from themodel is necessary to follow the single responsibility principle and prevent the model from becoming bloated and difficult to to maintain, by splitting them up, the model acts as a simple data container, the repository is strictly responsible for interating with the database, and the service focuses entirely on executing the busines slogic. this seperation of concerns makes the codebase much cleaners, easire to test, and more flexible, because changing how data is stored in the repository will not break the business rules in the service
+
+2. What happens if we only use the Model? Explain your imagination on how the interactions
+between each model (Program, Subscriber, Notification) affect the code complexity for
+each model?
+
+if we only use the model, we create a model that are fat where the data structure, database operations, and business logic are all tangled together. the complexity of each model skyrockets because tgey become highly dependent on each other. for example, the program model would not only store product data, but it woould also have to fetch subscriber data, format notification messages, and send http requests. this makes the code incredibly difficult to read, hard to maintain, and nearly impossible to test, because we cannot trigger one action without accidentally triggering the entire notification process
+
+3. Have you explored more about Postman? Tell us how this tool helps you to test your current work. You might want to also list which features in Postman you are interested in or feel like it is helpful to help your Group Project or any of your future software engineering projects.
+
+in this bambangshop tutorial, postman has been essential for testing the REST API independently, without needing to build a frontend interface. it allowed me to easily act as a client by sending POST request to the publisher to create new products. more importantly, it helped me verify that the observer pattern was functioning correctly across different instances, i could trigger a product creation on port 8000 and confirm that the notification payload was successfully routed to the receiver on port 8001. being able to directly inspect the JSON body, headers, and HTTP status codes made debugging the notification routing mechanism much more straightforward
+
+for my future, this is incredibly helpful for parallel development. if the backend team is still building out complex logic or database schemas, we can use postman to spin up a mock server that returns predetermined JSON responses. this ensures frontend development is never blocked waiting for the real API to be finished
 
 #### Reflection Publisher-3
